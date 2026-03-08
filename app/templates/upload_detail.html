@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}{{ upload.filename }} — AI Log Doctor{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="breadcrumb">
+        <a href="/">Home</a> <span>/</span>
+        <a href="/uploads">Uploads</a> <span>/</span>
+        <span>{{ upload.filename }}</span>
+    </div>
+
+    <div class="page-header" style="padding-top: 16px;">
+        <div class="flex items-center gap-3">
+            <h1>{{ upload.filename }}</h1>
+            <span id="status-badge"
+                  {% if upload.status == 'processing' %}
+                  hx-get="/uploads/{{ upload.id }}/status"
+                  hx-trigger="every 2s"
+                  hx-swap="outerHTML"
+                  {% endif %}>
+                <span class="badge badge-{{ upload.status_color }} {% if upload.status == 'processing' %}processing{% endif %}">
+                    {{ upload.status }}
+                </span>
+            </span>
+        </div>
+    </div>
+
+    {% if upload.error_message %}
+    <div class="alert alert-error">{{ upload.error_message }}</div>
+    {% endif %}
+
+    <div class="stats">
+        <div class="stat-card">
+            <div class="value">{{ upload.total_lines }}</div>
+            <div class="label">Lines</div>
+        </div>
+        <div class="stat-card">
+            <div class="value">{{ upload.total_events }}</div>
+            <div class="label">Events</div>
+        </div>
+        <div class="stat-card">
+            <div class="value">{{ upload.total_incidents }}</div>
+            <div class="label">Incidents</div>
+        </div>
+        <div class="stat-card">
+            <div class="value">{{ upload.created_at.strftime('%H:%M') }}</div>
+            <div class="label">Uploaded</div>
+        </div>
+    </div>
+
+    {% if upload.status == 'processing' %}
+    <div class="alert alert-info processing"
+         hx-get="/uploads/{{ upload.id }}"
+         hx-trigger="every 3s"
+         hx-select=".section"
+         hx-target="#incidents-section"
+         hx-swap="outerHTML">
+        Processing your log file... This page will update automatically.
+    </div>
+    {% endif %}
+
+    <div class="section" id="incidents-section">
+        {% if incidents %}
+        <div class="card-title">Incidents ({{ incidents|length }})</div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Severity</th>
+                        <th>Title</th>
+                        <th>Count</th>
+                        <th>First Seen</th>
+                        <th>Last Seen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for inc in incidents %}
+                    <tr>
+                        <td><span class="badge badge-{{ inc.severity_color }}">{{ inc.severity }}</span></td>
+                        <td><a href="/incidents/{{ inc.id }}">{{ inc.title or inc.sample_message[:60] }}</a></td>
+                        <td>{{ inc.count }}</td>
+                        <td class="text-muted text-sm">{{ inc.first_seen.strftime('%H:%M:%S') if inc.first_seen else '—' }}</td>
+                        <td class="text-muted text-sm">{{ inc.last_seen.strftime('%H:%M:%S') if inc.last_seen else '—' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% elif upload.status == 'done' %}
+        <div class="empty-state">
+            <h3>No incidents found</h3>
+            <p>No significant errors or warnings were detected in this log file.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

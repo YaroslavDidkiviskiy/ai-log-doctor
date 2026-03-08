@@ -1,0 +1,12 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./uploads:/app/uploads
+      - ./ai_log_doctor.db:/app/ai_log_doctor.db
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=sqlite:///./ai_log_doctor.db

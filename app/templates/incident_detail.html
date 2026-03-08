@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}{{ incident.title or 'Incident' }} — AI Log Doctor{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="breadcrumb">
+        <a href="/">Home</a> <span>/</span>
+        <a href="/uploads/{{ incident.upload_id }}">Upload #{{ incident.upload_id }}</a> <span>/</span>
+        <span>Incident</span>
+    </div>
+
+    <div class="page-header" style="padding-top: 16px;">
+        <div class="flex items-center gap-3">
+            <span class="badge badge-{{ incident.severity_color }}">{{ incident.severity }}</span>
+            <h1 style="font-size: 22px;">{{ incident.title or 'Untitled Incident' }}</h1>
+        </div>
+    </div>
+
+    <div class="stats">
+        <div class="stat-card">
+            <div class="value">{{ incident.count }}</div>
+            <div class="label">Occurrences</div>
+        </div>
+        <div class="stat-card">
+            <div class="value">{{ incident.first_seen.strftime('%H:%M:%S') if incident.first_seen else '—' }}</div>
+            <div class="label">First Seen</div>
+        </div>
+        <div class="stat-card">
+            <div class="value">{{ incident.last_seen.strftime('%H:%M:%S') if incident.last_seen else '—' }}</div>
+            <div class="label">Last Seen</div>
+        </div>
+        <div class="stat-card">
+            <div class="value text-sm" style="font-size: 13px; word-break: break-all;">{{ incident.fingerprint }}</div>
+            <div class="label">Fingerprint</div>
+        </div>
+    </div>
+
+    {% if incident.ai_summary %}
+    <div class="ai-card">
+        <h3>AI Analysis</h3>
+        <p>{{ incident.ai_summary }}</p>
+    </div>
+    {% endif %}
+
+    {% if incident.possible_causes %}
+    <div class="section">
+        <div class="section-title">Probable Causes</div>
+        <div class="card">
+            <ul class="cause-list">
+                {% for cause in incident.possible_causes %}
+                <li>{{ cause }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if incident.next_steps %}
+    <div class="section">
+        <div class="section-title">Next Debugging Steps</div>
+        <div class="card">
+            <ol class="steps-list">
+                {% for step in incident.next_steps %}
+                <li>{{ step }}</li>
+                {% endfor %}
+            </ol>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="section">
+        <div class="section-title">Sample Message</div>
+        <div class="code-block">{{ incident.sample_message or '—' }}</div>
+    </div>
+
+    {% if incident.sample_traceback %}
+    <div class="section">
+        <div class="section-title">Traceback</div>
+        <div class="code-block">{{ incident.sample_traceback }}</div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

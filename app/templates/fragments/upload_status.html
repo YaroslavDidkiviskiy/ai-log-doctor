@@ -1,0 +1,16 @@
+<span id="status-badge"
+      {% if upload.status == 'processing' %}
+      hx-get="/uploads/{{ upload.id }}/status"
+      hx-trigger="every 2s"
+      hx-swap="outerHTML"
+      {% elif upload.status in ('done', 'failed') %}
+      hx-get="/uploads/{{ upload.id }}"
+      hx-trigger="load"
+      hx-target="body"
+      hx-swap="innerHTML"
+      hx-push-url="true"
+      {% endif %}>
+    <span class="badge badge-{{ upload.status_color }} {% if upload.status == 'processing' %}processing{% endif %}">
+        {{ upload.status }}
+    </span>
+</span>

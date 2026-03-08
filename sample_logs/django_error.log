@@ -1,0 +1,36 @@
+2026-03-08 10:15:01 INFO django.server GET /api/users/ 200
+2026-03-08 10:15:03 INFO django.server GET /api/products/ 200
+2026-03-08 10:15:05 ERROR django.request Internal Server Error: /api/orders/
+Traceback (most recent call last):
+  File "/app/views/orders.py", line 45, in create_order
+    order = Order.objects.create(**validated_data)
+  File "/app/models/order.py", line 12, in save
+    self.validate_stock()
+ValueError: Insufficient stock for product_id=482
+2026-03-08 10:15:07 WARNING django.security CSRF token missing from POST request to /api/checkout/
+2026-03-08 10:15:09 INFO django.server GET /api/users/profile/ 200
+2026-03-08 10:15:12 ERROR django.db.backends OperationalError: connection to server at "192.168.1.50", port 5432 failed: Connection refused
+2026-03-08 10:15:14 ERROR django.db.backends OperationalError: connection to server at "192.168.1.50", port 5432 failed: Connection refused
+2026-03-08 10:15:16 ERROR django.db.backends OperationalError: connection to server at "192.168.1.50", port 5432 failed: Connection refused
+2026-03-08 10:15:18 ERROR django.request Internal Server Error: /api/orders/
+Traceback (most recent call last):
+  File "/app/views/orders.py", line 45, in create_order
+    order = Order.objects.create(**validated_data)
+  File "/app/models/order.py", line 12, in save
+    self.validate_stock()
+ValueError: Insufficient stock for product_id=917
+2026-03-08 10:15:20 INFO django.server GET /static/css/main.css 200
+2026-03-08 10:15:22 WARNING django.security CSRF token missing from POST request to /api/checkout/
+2026-03-08 10:15:24 ERROR django.request Internal Server Error: /api/payments/process/
+Traceback (most recent call last):
+  File "/app/views/payments.py", line 78, in process_payment
+    response = gateway.charge(amount=order.total)
+  File "/app/services/payment_gateway.py", line 33, in charge
+    return self.client.post("/v1/charges", data=payload)
+TimeoutError: Payment gateway did not respond within 30s
+2026-03-08 10:15:26 INFO django.server GET /api/products/featured/ 200
+2026-03-08 10:15:28 WARNING django.request Too many requests from IP 10.0.0.15
+2026-03-08 10:15:30 ERROR django.db.backends OperationalError: connection to server at "192.168.1.50", port 5432 failed: Connection refused
+2026-03-08 10:15:32 ERROR app.auth Failed to validate token for user 183 from IP 192.168.1.14
+2026-03-08 10:15:34 ERROR app.auth Failed to validate token for user 742 from IP 10.0.0.22
+2026-03-08 10:15:36 ERROR app.auth Failed to validate token for user 56 from IP 172.16.0.8

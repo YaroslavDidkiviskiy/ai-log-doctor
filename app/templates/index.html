@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}AI Log Doctor — Upload & Analyze Logs{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>Upload & Analyze Logs</h1>
+        <p>Drop a log file to automatically parse events, group recurring incidents, and get AI-powered analysis with probable causes and debugging steps.</p>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-error">{{ error }}</div>
+    {% endif %}
+
+    <form action="/upload" method="post" enctype="multipart/form-data" id="upload-form">
+        <div class="upload-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+            <h3>Drop your log file here or click to browse</h3>
+            <p>Supports .log and .txt files up to 50 MB</p>
+            <input type="file" name="file" id="file-input" accept=".log,.txt">
+            <div class="mt-2" id="file-name" style="display:none">
+                <span class="badge badge-blue" id="selected-file"></span>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: -16px; margin-bottom: 32px;">
+            <button type="submit" class="btn btn-primary" id="upload-btn" disabled>
+                Upload & Process
+            </button>
+        </div>
+    </form>
+
+    {% if uploads %}
+    <div class="section">
+        <div class="card-title">Recent Uploads</div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>File</th>
+                        <th>Status</th>
+                        <th>Incidents</th>
+                        <th>Events</th>
+                        <th>Uploaded</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in uploads %}
+                    <tr>
+                        <td><a href="/uploads/{{ u.id }}">{{ u.filename }}</a></td>
+                        <td><span class="badge badge-{{ u.status_color }}">{{ u.status }}</span></td>
+                        <td>{{ u.total_incidents }}</td>
+                        <td>{{ u.total_events }}</td>
+                        <td class="text-muted text-sm">{{ u.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <h3>No uploads yet</h3>
+        <p>Upload your first log file to get started.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+const uploadBtn = document.getElementById('upload-btn');
+const fileNameEl = document.getElementById('file-name');
+const selectedFile = document.getElementById('selected-file');
+
+fileInput.addEventListener('change', () => {
+    if (fileInput.files.length) {
+        selectedFile.textContent = fileInput.files[0].name;
+        fileNameEl.style.display = 'block';
+        uploadBtn.disabled = false;
+    }
+});
+
+dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    if (e.dataTransfer.files.length) {
+        fileInput.files = e.dataTransfer.files;
+        fileInput.dispatchEvent(new Event('change'));
+    }
+});
+</script>
+{% endblock %}

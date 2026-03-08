@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}All Uploads — AI Log Doctor{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>All Uploads</h1>
+        <p>Browse all uploaded log files and their analysis results.</p>
+    </div>
+
+    {% if uploads %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>File</th>
+                    <th>Status</th>
+                    <th>Lines</th>
+                    <th>Events</th>
+                    <th>Incidents</th>
+                    <th>Uploaded</th>
+                    <th>Processed</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in uploads %}
+                <tr>
+                    <td class="text-muted">{{ u.id }}</td>
+                    <td><a href="/uploads/{{ u.id }}">{{ u.filename }}</a></td>
+                    <td><span class="badge badge-{{ u.status_color }}">{{ u.status }}</span></td>
+                    <td>{{ u.total_lines }}</td>
+                    <td>{{ u.total_events }}</td>
+                    <td>{{ u.total_incidents }}</td>
+                    <td class="text-muted text-sm">{{ u.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td class="text-muted text-sm">{{ u.processed_at.strftime('%Y-%m-%d %H:%M') if u.processed_at else '—' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <h3>No uploads yet</h3>
+        <p>Go to the <a href="/">home page</a> to upload your first log file.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

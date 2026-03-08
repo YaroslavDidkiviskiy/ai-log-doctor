@@ -1,0 +1,27 @@
+2026-03-08 08:00:01 INFO scheduler Starting daily batch job
+2026-03-08 08:00:02 INFO scheduler Processing 1452 records
+2026-03-08 08:00:05 WARNING scheduler Record 234 has missing field: email
+2026-03-08 08:00:06 WARNING scheduler Record 567 has missing field: email
+2026-03-08 08:00:08 ERROR billing Failed to charge customer 8901: Card declined
+2026-03-08 08:00:10 ERROR billing Failed to charge customer 2345: Card declined
+2026-03-08 08:00:12 ERROR billing Failed to charge customer 6789: Card declined
+2026-03-08 08:00:14 INFO scheduler Batch progress: 500/1452
+2026-03-08 08:00:16 ERROR notification Push notification failed for device d8a7b6c5-e4f3-4a2b-9c1d-0e8f7a6b5c4d: Service unavailable
+2026-03-08 08:00:18 ERROR notification Push notification failed for device a1b2c3d4-e5f6-4789-abcd-ef0123456789: Service unavailable
+2026-03-08 08:00:20 CRITICAL database Database connection pool exhausted — 50/50 connections in use
+2026-03-08 08:00:22 CRITICAL database Database connection pool exhausted — 50/50 connections in use
+2026-03-08 08:00:24 ERROR api.v2 Unhandled exception in /api/v2/sync
+Traceback (most recent call last):
+  File "/app/api/v2/sync.py", line 89, in sync_data
+    merged = merge_records(local, remote)
+  File "/app/utils/merge.py", line 15, in merge_records
+    assert len(local) == len(remote), "Record count mismatch"
+AssertionError: Record count mismatch
+2026-03-08 08:00:26 WARNING scheduler Record 891 has missing field: email
+2026-03-08 08:00:28 INFO scheduler Batch progress: 1000/1452
+2026-03-08 08:00:30 ERROR billing Failed to charge customer 3456: Card declined
+2026-03-08 08:00:32 ERROR notification Push notification failed for device f9e8d7c6-b5a4-4321-fedc-ba9876543210: Service unavailable
+2026-03-08 08:00:34 CRITICAL database Database connection pool exhausted — 50/50 connections in use
+2026-03-08 08:00:36 INFO scheduler Batch complete: 1452/1452 processed, 23 errors
+2026-03-08 08:00:38 WARNING monitoring Memory usage at 87% on worker-3
+2026-03-08 08:00:40 ERROR monitoring Disk usage critical at 95% on worker-1
